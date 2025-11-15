@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NID Campus 3D Map Viewer - Final Version</title>
+    <!-- 1. ADDED: Viewport tag for proper mobile scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>NID Campus 3D Map Viewer - Mobile Controls</title>
+    <!-- Include Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include necessary extensions -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
@@ -19,7 +23,7 @@
             gap: 15px;
             z-index: 5;
         }
-        /* Increased button size for better touch/Android experience */
+        /* Mobile-friendly button sizes */
         button {
             border: none;
             border-radius: 12px;
@@ -112,11 +116,25 @@
             directionalLight.castShadow = true;
             scene.add(directionalLight);
 
-            // 5. Controls (Zoom and Pan Enabled)
+            // 5. Controls 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.target.set(0, 0, 0);
             controls.enableZoom = true; 
             controls.enablePan = true;
+            
+            // --- NEW: Camera Distance Limits ---
+            controls.minDistance = INITIAL_CAMERA_DISTANCE * 0.5; // Max zoom in (e.g., 2.5m)
+            controls.maxDistance = INITIAL_CAMERA_DISTANCE * 4.0; // Max zoom out (e.g., 20m)
+
+            // --- NEW: Rotation Limits (Disable Alpha/Horizontal, Enable Phi/Vertical) ---
+            const fixedAlpha = 0; 
+            controls.minAzimuthAngle = fixedAlpha; // Lock horizontal movement to one position
+            controls.maxAzimuthAngle = fixedAlpha;
+            
+            // Optionally, limit vertical movement to prevent viewing completely under the map
+            controls.minPolarAngle = Math.PI * 0.1;   // Limit how far down you can look
+            controls.maxPolarAngle = Math.PI * 0.9;  // Limit how far up you can look (nearly 180 deg)
+            
             controls.update();
 
             // 6. GLTF Loader
@@ -128,7 +146,6 @@
             window.addEventListener('deviceorientationabsolute', onDeviceOrientation, false);
             window.addEventListener('deviceorientation', onDeviceOrientation, false);
 
-            // Load the initial model
             loadModel(INITIAL_MODEL);
             animate();
         }
@@ -148,20 +165,17 @@
         }
 
         function loadModel(modelName) {
-            // Remove previous model from the scene
             if (currentModel) {
                 scene.remove(currentModel);
                 currentModel = null;
             }
 
-            // Load new model
             loader.load(
                 modelName,
                 (gltf) => {
                     currentModel = gltf.scene;
                     scene.add(currentModel);
 
-                    // Recalculate default target (emulating camera-target="auto")
                     const box = new THREE.Box3().setFromObject(currentModel);
                     const center = box.getCenter(new THREE.Vector3());
                     controls.target.copy(center);
@@ -172,7 +186,7 @@
             );
         }
         
-        // --- RECENERING LOGIC (Sets controls.target where user clicks) ---
+        // --- RECENERING LOGIC ---
 
         function onCanvasClick(event) {
             const rect = renderer.domElement.getBoundingClientRect();
@@ -194,7 +208,6 @@
 
         // --- BUTTON CONTROL FUNCTIONS ---
 
-        // Function called by the HTML buttons
         function setModel(modelName) {
             loadModel(modelName);
         }
@@ -205,7 +218,7 @@
                 ? 'rgba(255, 100, 100, 0.8)'
                 : 'rgba(0, 0, 0, 0.6)';
             
-            // Disable standard orbit controls (pan/zoom/rotate) when in device orientation mode
+            // Disable OrbitControls (manual control) when in device orientation mode
             controls.enabled = !orientMode;
 
             if (orientMode) {
@@ -213,7 +226,7 @@
             }
         });
 
-        // --- DEVICE ORIENTATION LOGIC ---
+        // --- DEVICE ORIENTATION LOGIC (Uses Alpha/Compass when orientMode is true) ---
         function normalizeAngle(angle) {
             angle = angle % 360;
             if (angle < 0) angle += 360;
@@ -239,11 +252,10 @@
             if (orientMode) {
                 const target = controls.target;
                 
-                // Use the camera's current distance to the target to maintain zoom
+                // Get current distance to maintain zoom level
                 const currentDistance = camera.position.distanceTo(target);
 
                 // Convert compass angle (degrees) to yaw rotation (radians)
-                // Added +90 offset to align compass North with the 3D world's forward axis
                 const yaw = THREE.MathUtils.degToRad(smoothAlpha + 90);
                 
                 // Calculate the new camera position around the target
