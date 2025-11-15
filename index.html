@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NID 3D Campus Map</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+<div class="ui-panel">
+    <button id="Insti_map_Final.glb" class="ui-button">Map</button>
+    <button id="G_floor_Final.glb" class="ui-button">G</button>
+    <button id="1st_floor_Final.glb" class="ui-button">1</button>
+    <button id="2nd_floor_Final.glb" class="ui-button">2</button>
+</div>
+
+<button id="orientButton" class="compass-button">
+    🧭
+</button>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
