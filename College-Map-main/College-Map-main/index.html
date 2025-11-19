@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3D Campus Map — NID</title>
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- import map: allows bare imports like "three" and "three/examples/jsm/..." -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Top-right navigation panel -->
+  <div id="uiPanel" class="ui-panel"></div>
+
+  <!-- Bottom-right orientation compass -->
+  <button id="orientBtn" class="compass-button" title="Toggle Orient Mode">🧭</button>
+
+  <!-- Canvas is created by sceneSetup; we keep an empty container to be explicit -->
+  <div id="canvasContainer"></div>
+
+  <!-- Main entry -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
