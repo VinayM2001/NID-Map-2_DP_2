@@ -1,30 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NID 3D Campus Map</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3D Campus Map — NID</title>
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- import map: allows bare imports like "three" and "three/examples/jsm/..." -->
   <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
-        "three/examples/jsm/": "https://unpkg.com/three@0.165.0/examples/jsm/"
-      }
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.165.0/examples/jsm/"
     }
+  }
   </script>
 </head>
 <body>
-<div class="ui-panel">
-    <button id="Insti_map_Final.glb" class="ui-button">Map</button>
-    <button id="G_floor_Final.glb" class="ui-button">G</button>
-    <button id="1st_floor_Final.glb" class="ui-button">1</button>
-    <button id="2nd_floor_Final.glb" class="ui-button">2</button>
-</div>
+  <!-- Top-right navigation panel -->
+  <div id="uiPanel" class="ui-panel"></div>
 
-<button id="orientButton" class="compass-button">
-    🧭
-</button>
+  <!-- Bottom-right orientation compass -->
+  <button id="orientBtn" class="compass-button" title="Toggle Orient Mode">🧭</button>
+
+  <!-- Canvas is created by sceneSetup; we keep an empty container to be explicit -->
+  <div id="canvasContainer"></div>
+
+  <!-- Main entry -->
   <script type="module" src="./main.js"></script>
 </body>
 </html>
