@@ -6,6 +6,28 @@ import { modelGroup } from './modelLoader.js';
 // - pivot set by UI (tap) via setPivotPoint()
 // - disables user horizontal rotation while orientation is active
 
+let targetNorthRotation = 0;
+let isOrienting = false;
+
+export function orientToNorth(alpha) {
+    targetNorthRotation = THREE.MathUtils.degToRad(alpha);
+    isOrienting = true;
+}
+
+export function updateOrientation(model) {
+    if (!isOrienting) return;
+
+    model.rotation.y = THREE.MathUtils.lerp(
+        model.rotation.y,
+        -targetNorthRotation,     // Negative to match –Z north
+        0.1                       // smoothness factor
+    );
+
+    if (Math.abs(model.rotation.y + targetNorthRotation) < 0.001) {
+        isOrienting = false;
+    }
+}
+
 let orientOn = false;
 let lastAlpha = 0;
 let smoothAlpha = 0;
